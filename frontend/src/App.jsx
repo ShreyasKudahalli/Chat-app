@@ -1,12 +1,10 @@
 
 import './App.css'
+import RegisterPage from './components/RegisterPage.jsx'
 
 function App() {
-
   return (
-    <>
-      <h1>Welcome to Chat-App</h1>
-    </>
+    <RegisterPage />
   )
 }
 
