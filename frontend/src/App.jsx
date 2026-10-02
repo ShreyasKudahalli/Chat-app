@@ -26,7 +26,11 @@ function App() {
   }
 
   function logout() {
-    localStorage.removeItem('commonroom-demo-user')
+    try {
+      localStorage.removeItem('commonroom-demo-user')
+    } catch {
+      // Logout still works for the current session when storage is unavailable.
+    }
     setUser(null)
     setAuthView('register')
   }

@@ -318,7 +318,7 @@ function ChatWorkspace({ user, onLogout }) {
                 <Avatar person={selectedConversation} size="large" />
                 <h3>{selectedConversation.name}</h3>
                 <p>{selectedConversation.kind}{selectedConversation.members ? ` · ${selectedConversation.members}` : ''}</p>
-                <span className="today-divider"><span /> TODAY <span /></span>
+                <span className="today-divider"><span /> CONVERSATION <span /></span>
               </div>
 
               <div className="message-list" aria-live="polite">
