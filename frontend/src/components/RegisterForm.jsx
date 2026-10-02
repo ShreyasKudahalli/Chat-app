@@ -1,27 +1,30 @@
 import { useState } from 'react'
 
-function RegisterForm() {
+function RegisterForm({ onRegister, onSignIn }) {
   const [showPassword, setShowPassword] = useState(false)
-  const [notice, setNotice] = useState('')
 
   function handleSubmit(event) {
     event.preventDefault()
-    setNotice('Account creation is not connected yet. Your details have not been sent.')
+    const formData = new FormData(event.currentTarget)
+    onRegister({
+      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
+      email: String(formData.get('email')).trim().toLowerCase(),
+    })
   }
 
   return (
     <section className="form-panel" aria-labelledby="register-heading">
       <div className="form-topline">
         <span>Already have an account?</span>
-        <a href="#sign-in">Sign in <span aria-hidden="true">↗</span></a>
+        <button className="text-button" type="button" onClick={onSignIn}>Sign in <span aria-hidden="true">↗</span></button>
       </div>
 
       <div className="form-content">
         <p className="form-kicker">Join the conversation</p>
         <h2 id="register-heading">Create your account</h2>
-        <p className="form-intro">A name, an email, and you're in.</p>
+          <p className="form-intro">A name, an email, and you're in.</p>
 
-        <form className="register-form" onSubmit={handleSubmit} onChange={() => setNotice('')}>
+          <form className="register-form" onSubmit={handleSubmit}>
           <div className="name-fields">
             <label className="field">
               <span>First name</span>
@@ -68,10 +71,9 @@ function RegisterForm() {
           <button className="submit-button" type="submit">
             Create account <span aria-hidden="true">→</span>
           </button>
-          <p className="form-notice" role="status">{notice}</p>
         </form>
 
-        <p className="security-note"><span aria-hidden="true">✳</span> Your conversations are yours. Always.</p>
+          <p className="browser-demo-note">Browser demo only. Your profile and messages stay on this device; your password is not stored.</p>
       </div>
     </section>
   )
