@@ -1,19 +1,58 @@
 import { useState } from 'react'
+import { registerUser } from '../services/api.js'
 
 function RegisterForm({ onRegister, onSignIn }) {
   const [showPassword, setShowPassword] = useState(false)
+  const [toastMessage, setToastMessage] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     const formData = new FormData(event.currentTarget)
-    onRegister({
-      name: `${formData.get('first_name')} ${formData.get('last_name')}`.trim(),
-      email: String(formData.get('email')).trim().toLowerCase(),
-    })
+
+    const payload = {
+      first_name: String(formData.get('first_name') || '').trim(),
+      last_name: String(formData.get('last_name') || '').trim(),
+      email: String(formData.get('email') || '').trim().toLowerCase(),
+      password: String(formData.get('password') || ''),
+    }
+
+    try {
+      await registerUser(payload)
+      setToastMessage('Registration successful! Redirecting to login...')
+
+      window.setTimeout(() => {
+        setToastMessage('')
+        onSignIn()
+      }, 1500)
+    } catch (error) {
+      console.error('Registration failed:', error.response?.data || error.message)
+      alert(error.response?.data?.email?.[0] || error.response?.data?.non_field_errors?.[0] || 'Registration failed. Please try again.')
+    }
   }
 
   return (
-    <section className="form-panel" aria-labelledby="register-heading">
+    <>
+      {toastMessage && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '24px',
+            right: '24px',
+            zIndex: 1000,
+            background: '#1f8f5f',
+            color: '#fff',
+            padding: '12px 18px',
+            borderRadius: '10px',
+            boxShadow: '0 10px 25px rgba(0,0,0,0.18)',
+            fontSize: '14px',
+            fontWeight: 600,
+          }}
+        >
+          {toastMessage}
+        </div>
+      )}
+
+      <section className="form-panel" aria-labelledby="register-heading">
       <div className="form-topline">
         <span>Already have an account?</span>
         <button className="text-button" type="button" onClick={onSignIn}>Sign in <span aria-hidden="true">↗</span></button>
@@ -76,6 +115,7 @@ function RegisterForm({ onRegister, onSignIn }) {
           <p className="browser-demo-note">Browser demo only. Your profile and messages stay on this device; your password is not stored.</p>
       </div>
     </section>
+    </>
   )
 }
 
